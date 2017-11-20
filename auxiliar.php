@@ -73,6 +73,56 @@ function comprobarParametro($param): void
     }
 }
 
+function comprobarTitulo(string $titulo,array &$error):void
+{
+    if ($titulo === '') {
+        $error[] = "El titulo es obligatorio";
+        return;
+    }
+    if (mb_strlen($titulo)>255) {
+        $error[] = "El titulo es demasiado largo";
+    }
+}
+
+function comprobarAnyo(string $anyo,array &$error):void
+{
+    if ($anyo === '') {
+        return;
+    }
+    $filtro=filter_var($anyo, FLTER_VALIDATE_INT, [
+        'options' => [
+            'min_range' => 0,
+            'max_range' => 9999,
+        ],
+    ]);
+    if ($filtro === false) {
+        $error[] = 'No es un año valido';
+    }
+}
+
+function comprobarDuracion(string $duracion,array &$error):void
+{
+    if ($duracion === '') {
+        return;
+    }
+    $filtro=filter_var($duracion, FLTER_VALIDATE_INT, [
+        'options' => [
+            'min_range' => 0,
+            'max_range' => 32767,
+        ],
+    ]);
+    if ($filtro === false) {
+        $error[] = 'No es una duracion valida';
+    }
+}
+
+function comprobaErrores(array $error):void
+{
+    if (!empty($error)) {
+        throw new Exception($error);
+    }
+}
+
 /**
  * Muestra un enlace a la pagina principal index.php con el texto 'volver'
  */

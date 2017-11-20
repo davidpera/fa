@@ -64,5 +64,6 @@
                 </tbody>
             </table>
         </div>
+        <a href="insertar.php">Insertar una nueva pelicula</a>
     </body>
 </html>
