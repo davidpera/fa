@@ -23,10 +23,11 @@ function conectar(): PDO
  * Busca una pelicula a partir de su id
  * @param  PDO      $pdo Conexion a la base de datos
  * @param  int      $id  Id de la pelicula
+ * @param  array    $error El array de errores
  * @return array         La fila con los datos de la pelicula
  * @throws Exception     Si la pelicula no existe
  */
-function buscarPelicula(PDO $pdo,int $id): array
+function buscarPelicula(PDO $pdo,int $id,array &$error): array
 {
     $sent = $pdo -> prepare("  SELECT *
                                 FROM peliculas
@@ -35,7 +36,9 @@ function buscarPelicula(PDO $pdo,int $id): array
     $fila = $sent->fetch();
 
     if (empty($fila)) {
-        throw new Exception('La pelicula no existe');
+        $error = 'La pelicula no existe';
+        throw new Exception;
+
     }
     return $fila;
 }
@@ -44,15 +47,17 @@ function buscarPelicula(PDO $pdo,int $id): array
  * Borra una pelicula a partir de su id
  * @param  PDO      $pdo Conexion a la base de datos
  * @param  int      $id  Id de la pelicula
+ * @param  array    $error El array de errores
  * @throws Exception     Si ha habido algun problema al borrar la pelicula
  */
-function borrarPelicula(PDO $pdo,int $id): void
+function borrarPelicula(PDO $pdo,int $id,array &$error): void
 {
     $sent = $pdo -> prepare("DELETE FROM peliculas
                                     WHERE id = :id");
     $sent -> execute([':id' => $id]);
     if ($sent->rowCount() !== 1) {
-        throw new Exception("Ha ocurrido un error al eliminar la pelicula");
+        $error = "Ha ocurrido un error al eliminar la pelicula";
+        throw new Exception;
     }
 }
 
@@ -64,12 +69,84 @@ function borrarPelicula(PDO $pdo,int $id): void
  * su valor tambien es falso por lo cual solo tenemos que comprobar si el
  * valor no es falso
  * @param  mixed      $param El parametro a comprobar
- * @throws Exception         Si el parametro no es correcto
+ * @param  array    $error El array de errores
+ * @throws ErrorException   Si el parametro no es correcto
  */
-function comprobarParametro($param): void
+function comprobarParametro($param,array &$error): void
 {
     if ($param === false) {
-        throw new Exception("Parametro incorrecto");
+        $error = "Parametro incorrecto";
+        throw new Exception;
+    }
+}
+
+function comprobarTitulo(string $titulo,array &$error):void
+{
+    if ($titulo === '') {
+        $error[] = "El titulo es obligatorio";
+        return;
+    }
+    if (mb_strlen($titulo)>255) {
+        $error[] = "El titulo es demasiado largo";
+    }
+}
+
+function comprobarAnyo(string $anyo,array &$error):void
+{
+    if ($anyo === '') {
+        return;
+    }
+    $filtro=filter_var($anyo, FILTER_VALIDATE_INT, [
+        'options' => [
+            'min_range' => 0,
+            'max_range' => 9999,
+        ],
+    ]);
+    if ($filtro === false) {
+        $error[] = 'No es un año valido';
+    }
+}
+
+function comprobarDuracion(string $duracion,array &$error):void
+{
+    if ($duracion === '') {
+        return;
+    }
+    $filtro=filter_var($duracion, FILTER_VALIDATE_INT, [
+        'options' => [
+            'min_range' => 0,
+            'max_range' => 32767,
+        ],
+    ]);
+    if ($filtro === false) {
+        $error[] = 'No es una duracion valida';
+    }
+}
+
+function comprobarGenero(PDO $pdo,$genero_id, array &$error):void
+{
+    if ($genero_id === ''){
+        $error[] = 'El genero es obligatorio';
+        return;
+    }
+    $filtro=filter_var($genero_id, FILTER_VALIDATE_INT);
+    if ($filtro === false) {
+        $error[] = 'El genenro debe ser un numero entero';
+        return;
+    }
+    $sent = $pdo -> prepare('SELECT COUNT(*)
+                                FROM generos
+                                where id = :genero_id');
+    $sent->execute([':genero_id' => $genero_id]);
+    if ($sent->fetchColumn() === 0) {
+        $error[] = 'El genero no existe';
+    }
+}
+
+function comprobarErrores(array &$error):void
+{
+    if (!empty($error)) {
+        throw new Exception;
     }
 }
 
@@ -84,13 +161,61 @@ function volver():void
 }
 
 /**
- * Muestra en pantalla el mensaje asociado a la excepcion capturada
- * @param Exception $e La excepcion capturada
+ * Escapa una cadena correctamente
+ * @param  string $cadena La cadena a escapar
+ * @return string         La cadena escapada
  */
-function mostrarError(Exception $e):void
+function h(?string $cadena):string
 {
-    ?>
-    <h3>Error: <?= $e->getMessage() ?></h3>
-    <?php
+    return htmlspecialchars($cadena, ENT_QUOTES | ENT_SUBSTITUTE);
+}
+
+/**
+ * Muestra en pantalla los mensajes de error capturados hasta el momento
+ * @param array $error Los mensajes capturados
+ */
+function mostrarError(array &$error):void
+{
+    foreach ($error as $v) {
+        ?>
+        <h3>Error: <?= h($v) ?></h3>
+        <?php
+    }
+
     volver();
+}
+
+function insertar(PDO $pdo,$titulo,$anyo,$sinopsis,$duracion,$genero_id):void
+{
+    $sql = 'INSERT INTO peliculas
+                    (titulo,anyo,sinopsis,duracion,genero_id)
+                    VALUES (';
+    $sql .= ':titulo, ';
+    $exec[':titulo'] = $titulo;
+    if ($anyo !== '') {
+        $sql .= ':anyo, ';
+        $exec[':anyo'] = $anyo;
+    }else{
+        $sql .= 'DEFAULT, ';
+    }
+
+    if ($sinopsis !== '') {
+        $sql .= ':sinopsis, ';
+        $exec[':sinopsis'] = $sinopsis;
+    }else{
+        $sql .= 'DEFAULT, ';
+    }
+
+    if ($duracion !== '') {
+        $sql .= ':duracion, ';
+        $exec[':duracion'] = $duracion;
+    }else{
+        $sql .= 'DEFAULT, ';
+    }
+    $sql .= ':genero_id';
+    $exec[':genero_id'] = $genero_id;
+    $sql .= ');';
+
+    $sent = $pdo -> prepare($sql);
+    $sent -> execute($exec);
 }
