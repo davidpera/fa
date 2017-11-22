@@ -185,37 +185,12 @@ function mostrarError(array &$error):void
     volver();
 }
 
-function insertar(PDO $pdo,$titulo,$anyo,$sinopsis,$duracion,$genero_id):void
+function insertar(PDO $pdo,array $valores):void
 {
-    $sql = 'INSERT INTO peliculas
-                    (titulo,anyo,sinopsis,duracion,genero_id)
-                    VALUES (';
-    $sql .= ':titulo, ';
-    $exec[':titulo'] = $titulo;
-    if ($anyo !== '') {
-        $sql .= ':anyo, ';
-        $exec[':anyo'] = $anyo;
-    }else{
-        $sql .= 'DEFAULT, ';
-    }
-
-    if ($sinopsis !== '') {
-        $sql .= ':sinopsis, ';
-        $exec[':sinopsis'] = $sinopsis;
-    }else{
-        $sql .= 'DEFAULT, ';
-    }
-
-    if ($duracion !== '') {
-        $sql .= ':duracion, ';
-        $exec[':duracion'] = $duracion;
-    }else{
-        $sql .= 'DEFAULT, ';
-    }
-    $sql .= ':genero_id';
-    $exec[':genero_id'] = $genero_id;
-    $sql .= ');';
-
+    $cols = array_keys($valores);
+    $vals = array_fill(0, count($valores),'?');
+    $sql = 'INSERT INTO peliculas ('.implode(', ',$cols).')'
+                       .'VALUES ('. implode(', ', $vals).')';
     $sent = $pdo -> prepare($sql);
-    $sent -> execute($exec);
+    $sent -> execute(array_values($valores));
 }
