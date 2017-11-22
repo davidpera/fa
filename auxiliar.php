@@ -204,7 +204,7 @@ function modificar(PDO $pdo,int $id,array $valores): void
 
     $set = implode(', ',$sets);
     $sql = "UPDATE peliculas
-            SET $sent
+            SET $set
             WHERE id = ?";
     $exec = array_values(array_filter($valores));
     $exec[] = $id;

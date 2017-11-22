@@ -31,13 +31,13 @@
                     comprobarDuracion($duracion, $error);
                     comprobarGenero($pdo, $genero_id, $error);
                     comprobarErrores($error);
-                    $valores = array_filter(compact(
+                    $valores = compact(
                         'titulo',
                         'anyo',
                         'sinopsis',
                         'duracion',
                         'genero_id'
-                    ));
+                    );
                     modificar($pdo,$id,$valores);
                     ?>
                     <h3>La pelicula se ha modificado correctamente</h3>
