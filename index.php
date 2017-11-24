@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -24,6 +25,14 @@
         $titulo = trim(filter_input(INPUT_GET, 'titulo'));
         ?>
         <div class="container">
+            <?php if(isset($_SESSION['mensaje'])): ?>
+                <div class="row">
+                    <div class="alert alert-success" role="alert">
+                        <?= $_SESSION['mensaje'] ?>
+                    </div>
+                </div>
+                <?php unset($_SESSION['mensaje']) ?>
+            <?php endif ?>
             <div class="row">
                 <div id="buscar">
                     <form action="index.php" method="get" class="form-inline">

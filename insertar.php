@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,10 +32,8 @@
                     'genero_id'
                 ),'comp');
                 insertar($pdo,$valores);
-                ?>
-                <h3>La pelicula se ha insertado correctamente</h3>
-                <?php
-                volver();
+                $_SESSION['mensaje'] = 'La pelicula se ha insertado correctaqmente';
+                header('Location: index.php');
             } catch (Exception $e) {
                 mostrarError($error);
             }

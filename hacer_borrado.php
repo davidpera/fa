@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,10 +17,8 @@
             buscarPelicula($pdo,$id,$error);
             borrarPelicula($pdo,$id,$error);
             comprobarErrores($error);
-            ?>
-            <h3>Pelicula eliminada correctamente</h3>
-            <?php
-            volver();
+            $_SESSION['mensaje'] = 'La pelicula se ha borrado correctaqmente';
+            header('Location: index.php');
         } catch (Exception $e) {
             mostrarError($error);
         }
