@@ -178,11 +178,15 @@ function mostrarError(array &$error):void
 {
     foreach ($error as $v) {
         ?>
-        <h3>Error: <?= h($v) ?></h3>
+        <div class="row">
+            <div class="alert alert-danger" role="alert">
+                <?= h($v) ?>
+            </div>
+        </div>
         <?php
     }
 
-    volver();
+    header('Location: index.php');
 }
 
 function insertar(PDO $pdo,array $valores):void
@@ -263,4 +267,47 @@ function formulario(array $datos, ?int $id): void
      $sinopsis  = trim(filter_input(INPUT_POST, 'sinopsis'));
      $duracion  = trim(filter_input(INPUT_POST, 'duracion'));
      $genero_id = trim(filter_input(INPUT_POST, 'genero_id'));
+ }
+
+ function comprobarUsuario(string $usuario, array $error):void
+ {
+     if($usuario === ''){
+         $error[] = 'El usuario es obligatorio';
+         return;
+     }
+     if(mb_strlen($usuario) > 255){
+         $error[] = 'El usuario es demasiado largo';
+     }
+     if(mb_strpos($usuario,' ') !== false){
+         $error[] = 'El usuario no puede contener espacios';
+     }
+ }
+
+ function comprobarPassword(string $password, array $error):void
+ {
+     if ($paspassword==='') {
+         $error[] = 'La contraseña es obligatoria';
+     }
+ }
+
+ function buscarUsuario(string $usuario,string $password,array $error):array
+ {
+     $pdo = conectar();
+     $sent = $pdo -> prepare('SELECT *
+                                FROM usuarios
+                                WHERE usuario = :usuario');
+    $sent->execute([':usuario' => $usuario]);
+    $fila = $sent->fetch();
+
+    if (empty($fila)) {
+        $error = 'El usuario no existe';
+        throw new Exception;
+
+    }
+    if(!password_verify($pasword,$fila['password'])){
+        $error[] = 'La contraseña no coincide';
+        throw new Exception;
+    }
+    return $fila;
+
  }
