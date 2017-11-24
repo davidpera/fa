@@ -13,6 +13,7 @@
         $sinopsis = trim(filter_input(INPUT_POST,'sinopsis'));
         $duracion = trim(filter_input(INPUT_POST,'duracion'));
         $genero_id = trim(filter_input(INPUT_POST,'genero_id'));
+        //recogerParametros();
         $error = [];
         if (!empty($_POST)):
             try {
@@ -28,7 +29,7 @@
                     'sinopsis',
                     'duracion',
                     'genero_id'
-                ));
+                ),'comp');
                 insertar($pdo,$valores);
                 ?>
                 <h3>La pelicula se ha insertado correctamente</h3>
@@ -40,33 +41,16 @@
 
         endif;
 
-        if(empty($_POST) || (!empty($_POST) && !empty($error))):
-        ?>
-            <form action="insertar.php" method="post">
-                <label for="titulo">Titulo*:</label>
-                <input type="text" id="titulo" name="titulo"
-                    value="<?= h($titulo) ?>"/><br/>
-                <label for="anyo">Año:</label>
-                <input type="text" id="anyo" name="anyo"
-                    value="<?= h($anyo) ?>"/><br/>
-                <label for="sinopsis">Sinopsis:</label>
-                <textarea id="sinopsis"
-                        name="sinopsis"
-                        rows="8"
-                        cols="70"><?= h($sinopsis) ?></textarea><br/>
-                <label for="duracion">Duracion:</label>
-                <input type="text" id="duracion" name="duracion"
-                    value="<?= h($duracion) ?>"/><br/>
-                <label for="genero_id">Genero*:</label>
-                <input type="text" id="genero_id" name="genero_id"
-                    value="<?= h($genero_id) ?>"/><br/>
-                <input type="submit" value="Insertar"/>
-                <input type="submit" value="Cancelar"
-                    formaction="index.php" formmethod="get"/>
+        if (empty($_POST) || (!empty($_POST) && !empty($error))) {
+            formulario(compact(
+                'titulo',
+                'anyo',
+                'sinopsis',
+                'duracion',
+                'genero_id'
+            ), null);
+        }
 
-            </form>
-        <?php
-        endif
         ?>
     </body>
 </html>
