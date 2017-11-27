@@ -17,10 +17,10 @@
             buscarPelicula($pdo,$id,$error);
             borrarPelicula($pdo,$id,$error);
             comprobarErrores($error);
-            $_SESSION['mensaje'] = 'La pelicula se ha borrado correctaqmente';
+            $_SESSION['mensaje'] = 'La pelicula se ha borrado correctamente';
             header('Location: index.php');
         } catch (Exception $e) {
-            mostrarError($error);
+            mostrarErrores($error);
         }
 
         ?>

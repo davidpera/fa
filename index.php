@@ -5,13 +5,13 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
         <style type="text/css">
-            fieldset {
+            .container {
                 margin-top: 24px;
+            }
+            fieldset {
                 margin-bottom: 24px;
             }
             #buscar {
@@ -25,10 +25,25 @@
         $titulo = trim(filter_input(INPUT_GET, 'titulo'));
         ?>
         <div class="container">
-            <?php if(isset($_SESSION['mensaje'])): ?>
+            <?php if (isset($_SESSION['usuario'])): ?>
                 <div class="row">
-                    <div class="alert alert-success" role="alert">
-                        <?= $_SESSION['mensaje'] ?>
+                    <div class="col-md-offset-10 col-md-2">
+                        <?= $_SESSION['usuario']['nombre'] ?>
+                        <a class="btn btn-info" href="logout.php">Logout</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="row">
+                    <div class="col-md-offset-10 col-md-2">
+                        <a class="btn btn-info" href="login.php">Login</a>
+                    </div>
+                </div>
+            <?php endif ?>
+            <?php if (isset($_SESSION['mensaje'])): ?>
+                <div class="row">
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <?= $_SESSION['mensaje'] ?>
                     </div>
                 </div>
                 <?php unset($_SESSION['mensaje']) ?>
@@ -104,9 +119,7 @@
                 </div>
             </div>
         </div>
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </body>
 </html>

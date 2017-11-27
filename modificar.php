@@ -40,23 +40,21 @@
                         'genero_id'
                     );
                     modificar($pdo,$id,$valores);
-                    $_SESSION['mensaje'] = 'La pelicula se ha modificado correctaqmente';
+                    $_SESSION['mensaje'] = 'La pelicula se ha modificado correctamente';
                     header('Location: index.php');
+                    return;
                 } catch (Exception $e) {
-                    mostrarError($error);
+                    mostrarErrores($error);
                 }
 
             endif;
-
-            if (empty($_POST) || (!empty($_POST) && !empty($error))) {
-                formulario(compact(
-                    'titulo',
-                    'anyo',
-                    'sinopsis',
-                    'duracion',
-                    'genero_id'
-                ), $id);
-            }
+            formulario(compact(
+                'titulo',
+                'anyo',
+                'sinopsis',
+                'duracion',
+                'genero_id'
+            ), $id);
         }catch (Exception $e){
             mostrarError($error);
         }
