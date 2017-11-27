@@ -12,7 +12,6 @@
                 margin-top: 24px;
             }
             fieldset {
-                margin-top: 24px;
                 margin-bottom: 24px;
             }
             #buscar {
@@ -26,20 +25,25 @@
         $titulo = trim(filter_input(INPUT_GET, 'titulo'));
         ?>
         <div class="container">
-            <?php if(isset($_SESSION['usuario']))?>
-
-            <div class="row">
-                <div class="col-md-offset-10 col-md-2">
-                    <a class="btn btn-info" href="login.php">Login</a>
-                </div>
-            </div>
-            <?php else: ?>
-                
-            <?php endif?>
-            <?php if(isset($_SESSION['mensaje'])): ?>
+            <?php if (isset($_SESSION['usuario'])): ?>
                 <div class="row">
-                    <div class="alert alert-success" role="alert">
-                        <?= $_SESSION['mensaje'] ?>
+                    <div class="col-md-offset-10 col-md-2">
+                        <?= $_SESSION['usuario']['nombre'] ?>
+                        <a class="btn btn-info" href="logout.php">Logout</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="row">
+                    <div class="col-md-offset-10 col-md-2">
+                        <a class="btn btn-info" href="login.php">Login</a>
+                    </div>
+                </div>
+            <?php endif ?>
+            <?php if (isset($_SESSION['mensaje'])): ?>
+                <div class="row">
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <?= $_SESSION['mensaje'] ?>
                     </div>
                 </div>
                 <?php unset($_SESSION['mensaje']) ?>

@@ -29,7 +29,7 @@
             </form>
             <?php
         }catch (Exception $e){
-            mostrarError($error);
+            mostrarErrores($error);
         }
 
         ?>

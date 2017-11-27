@@ -29,10 +29,10 @@
                 $fila = buscarUsuario($usuario,$password,$error);
                 comprobarErrores($error);
                 $_SESSION['usuario']= ["id" => $fila['id'],
-                                        'nombre' => $fila['nombre'],];
+                                        'nombre' => $fila['usuario'],];
                 header('location: index.php');
             } catch (Exception $e) {
-                mostrarError($error);
+                mostrarErrores($error);
             }
 
         }

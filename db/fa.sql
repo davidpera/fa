@@ -50,5 +50,5 @@ CREATE TABLE usuarios
 );
 
 INSERT INTO usuarios (usuario,password)
-VALUES ('pepe',crypt('pepe',gen_salt('bf',10)))
-      ,('juan',crypt('juan',gen_salt('bf',10)));
+VALUES ('pepe',crypt('pepe', gen_salt('bf', 10)))
+      ,('juan',crypt('juan', gen_salt('bf', 10)));
