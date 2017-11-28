@@ -1,6 +1,13 @@
 <?php
 
 session_start();
+
+require 'auxiliar.php';
+
+
+if(!comprobarLogeado()){
+    return;
+}
 $_SESSION = [];
 
 $params = session_get_cookie_params();
