@@ -228,8 +228,10 @@ function formulario(array $datos, ?int $id): void
         <label for="genero_id">Género*:</label>
         <input id="genero_id" type="text" name="genero_id"
             value="<?= h($genero_id) ?>"><br>
-        <input type="submit" value="<?= $boton ?>">
-        <a href="index.php">Cancelar</a>
+        <input class="btn btn-info btn-xs" type="submit" value="<?= $boton ?>">
+        <a class="btn btn-danger btn-xs" href="index.php">
+            Cancelar
+        </a>
     </form>
     <?php
 }
@@ -282,4 +284,15 @@ function buscarUsuario(
         throw new Exception;
     }
     return $fila;
+}
+
+function comprobarLogeado():bool
+{
+    if(!isset($_SESSION['usuario'])){
+        $_SESSION['mensaje'] = 'Usuario no identificado';
+        header('Location: index.php');
+        return false;
+    }
+
+    return true;
 }

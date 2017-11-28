@@ -9,6 +9,9 @@
         <?php
         require 'auxiliar.php';
 
+        if(!comprobarLogeado()){
+            return;
+        }
         $id = filter_input(INPUT_POST,'id',FILTER_VALIDATE_INT) ?? false;
         try {
             $error = [];
