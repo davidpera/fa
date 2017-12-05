@@ -298,8 +298,7 @@ function comprobarLogeado():bool
 }
 
 function cabecera($titulo = ""){
-    ?>
-    <?php session_start() ?>
+    session_start() ?>
     <!DOCTYPE html>
     <html>
         <head>
@@ -322,10 +321,27 @@ function cabecera($titulo = ""){
             <title><?= $titulo ?></title>
         </head>
         <body>
-            <?php
-            $titulo = trim(filter_input(INPUT_GET, 'titulo'));
-            ?>
             <div class="container">
+                <div class="row">
+                    <div class="pull-right">
+                        <?php if (isset($_SESSION['usuario'])): ?>
+                            <?= $_SESSION['usuario']['nombre'] ?>
+                            <a class="btn btn-info" href="logout.php">Logout</a>
+                        <?php else: ?>
+                            <a class="btn btn-info" href="login.php">Login</a>
+                        <?php endif ?>
+                    </div>
+                </div>
+                <hr>
+                <?php if (isset($_SESSION['mensaje'])): ?>
+                    <div class="row">
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <?= $_SESSION['mensaje'] ?>
+                        </div>
+                    </div>
+                    <?php unset($_SESSION['mensaje']) ?>
+                <?php endif ?>
     <?php
 }
 
